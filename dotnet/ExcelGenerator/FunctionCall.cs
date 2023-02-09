@@ -15,8 +15,49 @@
                 if (args.Length == 0)
                     Arguments = new string[0];
                 else
-                    Arguments = args.Split(",").Select(each => ObjectFrom(each.Trim())).ToArray();
+                    Arguments = ParseArgs(args);
             }
+        }
+
+        private string[] ParseArgs(string args)
+        {
+            var result = new List<string>();
+            var index = 0;
+            var startIndex = 0;
+            while (index < args.Length)
+            {
+                while (index < args.Length && char.IsSeparator(args[index]))
+                    index++;
+                if (index >= args.Length)
+                    break;
+                startIndex = index;
+                if (args[index] == '\"')
+                {
+                    while (index < args.Length && args[index] == '\"')
+                    {
+                        do
+                        {
+                            index++;
+                        } while (index < args.Length && args[index] != '\"');
+                        if (index < args.Length)
+                            index++;
+                    }
+                    result.Add(ObjectFrom(args.Substring(startIndex, index - startIndex)));
+                } else
+                {
+                    index = args.IndexOf(',', startIndex);
+                    if (index < 0)
+                        index = args.Length;
+                    result.Add(args.Substring(startIndex, index - startIndex));
+                }
+                while (index < args.Length && char.IsSeparator(args[index]))
+                    index++;
+                if (index < args.Length && args[index] == ',')
+                    startIndex = ++index;
+                else
+                    break;
+            }
+            return result.ToArray();
         }
 
         private string ObjectFrom(string value)
@@ -24,7 +65,7 @@
             if (value.Length == 0)
                 return "";
             if (value[0] == '\"')
-                return value.Substring(1, value.Length - 2).Replace("\"\"", "\"");
+                return value.Substring(1, value.Length - 2).Replace("\"\"", "\"").Replace("\\r", "\r").Replace("\\n", "\n");
             return value;
         }
 
