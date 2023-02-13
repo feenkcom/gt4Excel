@@ -1,2 +1,4 @@
 dotnet/ExcelGenerator/bin
 dotnet/ExcelGenerator/obj
+.DS_Store
+.vs

@@ -3,6 +3,7 @@
     {
         static void Main(string[] args)
         {
+            Console.InputEncoding = System.Text.Encoding.UTF8;
             IParser? parser = new GeneratorParser();
             while (parser != null)
             {

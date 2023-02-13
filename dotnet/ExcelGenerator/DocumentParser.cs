@@ -1,30 +1,23 @@
-﻿using DocumentFormat.OpenXml.Office2016.Excel;
-using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml.Spreadsheet;
+﻿using ClosedXML.Excel;
 
 namespace ExcelGenerator
 {
     internal class DocumentParser : IParser
     {
-        public DocumentParser(SpreadsheetDocument doc) {
-            Document = doc;
-            WorkbookPart = Document.AddWorkbookPart();
-            WorkbookPart.Workbook = new Workbook();
-            Sheets = WorkbookPart.Workbook.AppendChild(new Sheets());
-            SharedStringTablePart = WorkbookPart.AddNewPart<SharedStringTablePart>();
+        public DocumentParser(XLWorkbook doc, string filename) {
+            Workbook = doc;
+            Filename = filename;
         }
-        public SpreadsheetDocument Document { get; set; }
-        public WorkbookPart WorkbookPart { get; set; }
-        public Sheets Sheets { get; set; }
-        public SharedStringTablePart SharedStringTablePart { get; set; }
+        public XLWorkbook Workbook { get; }
+        public string Filename;
 
         public IParser? Parse(FunctionCall input)
         {
             switch (input.Function)
             {
                 case "Save":
-                    Document.Save();
-                    Document.Close();
+                    Workbook.SaveAs(Filename);
+                    Workbook.Dispose();
                     return new GeneratorParser();
                 case "CreateSheet":
                     return new SheetParser(this, input.Arguments[0]);

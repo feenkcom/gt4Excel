@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Packaging;
-using DocumentFormat.OpenXml;
+﻿using ClosedXML.Excel;
 
 namespace ExcelGenerator
 {
@@ -10,8 +9,8 @@ namespace ExcelGenerator
             switch (input.Function)
             {
                 case "CreateDocument":
-                    var spreadsheetDocument = SpreadsheetDocument.Create(input.Arguments[0], SpreadsheetDocumentType.Workbook);
-                    return new DocumentParser(spreadsheetDocument);
+                    var workbook = new XLWorkbook();
+                    return new DocumentParser(workbook, input.Arguments[0]);
                 case "Quit":
                     return null;
             }
