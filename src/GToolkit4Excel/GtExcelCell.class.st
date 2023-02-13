@@ -3,10 +3,16 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'value',
-		'isFormula'
+		'isFormula',
+		'isBold'
 	],
 	#category : #GToolkit4Excel
 }
+
+{ #category : #accessing }
+GtExcelCell >> bold [
+	isBold := true
+]
 
 { #category : #accessing }
 GtExcelCell >> columnFor: anInteger [
@@ -18,7 +24,8 @@ GtExcelCell >> columnFor: anInteger [
 { #category : #accessing }
 GtExcelCell >> initialize [
 	super initialize.
-	isFormula := false
+	isFormula := false.
+	isBold := false
 ]
 
 { #category : #accessing }
@@ -38,13 +45,16 @@ GtExcelCell >> saveAt: aPoint on: aStream [
 	command := isFormula
 			ifTrue: [ 'SetFormula' ]
 			ifFalse: [ value isNumber ifTrue: [ 'SetNumber' ] ifFalse: [ 'SetText' ] ].
-
-	^ GtExcelFile
+	GtExcelFile
 		outputCommand: command
-		withArgs: {value.
-				self columnFor: aPoint x - 1.
-				aPoint y}
-		on: aStream
+		withArgs: {(self columnFor: aPoint x - 1) , aPoint y printString.
+				value}
+		on: aStream.
+	isBold
+		ifTrue: [ GtExcelFile
+				outputCommand: 'Bold'
+				withArgs: {(self columnFor: aPoint x - 1) , aPoint y printString}
+				on: aStream ]
 ]
 
 { #category : #accessing }

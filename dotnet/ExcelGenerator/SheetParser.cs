@@ -15,20 +15,33 @@ namespace ExcelGenerator
 
         public IParser? Parse(FunctionCall input)
         {
-            IXLCell cell;
             switch (input.Function)
             {
                 case "SetText":
-                    cell = Worksheet.Cell(input.Arguments[1] + input.Arguments[2]);
-                    cell.Value = input.Arguments[0];
+                    Worksheet.Cell(input.Arguments[0]).Value = input.Arguments[1];
                     break;
                 case "SetNumber":
-                    cell = Worksheet.Cell(input.Arguments[1] + input.Arguments[2]);
-                    cell.Value = decimal.Parse(input.Arguments[0]);
+                    Worksheet.Cell(input.Arguments[0]).Value = decimal.Parse(input.Arguments[1]);
                     break;
                 case "SetFormula":
-                    cell = Worksheet.Cell(input.Arguments[1] + input.Arguments[2]);
-                    cell.FormulaA1 = input.Arguments[0];
+                    Worksheet.Cell(input.Arguments[0]).FormulaA1 = input.Arguments[1];
+                    break;
+                case "Bold":
+                    Worksheet.Cell(input.Arguments[0]).Style.Font.Bold = true;
+                    break;
+                case "AdjustWidthToContents":
+                    if (input.Arguments.Length == 0)
+                        Worksheet.Columns().AdjustToContents();
+                    else
+                        foreach (var each in input.Arguments)
+                            Worksheet.Columns(each).AdjustToContents();
+                    break;
+                case "AdjustHeightToContents":
+                    if (input.Arguments.Length == 0)
+                        Worksheet.Rows().AdjustToContents();
+                    else
+                        foreach (var each in input.Arguments)
+                            Worksheet.Rows(each).AdjustToContents();
                     break;
                 case "EndSheet":
                     return DocumentParser;

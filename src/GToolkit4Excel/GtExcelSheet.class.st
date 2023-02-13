@@ -58,6 +58,14 @@ GtExcelSheet >> saveOn: aStream [
 		on: aStream.
 	cells keysAndValuesDo: [ :point :cell | cell saveAt: point on: aStream ].
 	GtExcelFile
+		outputCommand: 'AdjustWidthToContents'
+		withArgs: #()
+		on: aStream.
+	GtExcelFile
+		outputCommand: 'AdjustHeightToContents'
+		withArgs: #()
+		on: aStream.
+	GtExcelFile
 		outputCommand: 'EndSheet'
 		withArgs: #()
 		on: aStream
