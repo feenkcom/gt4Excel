@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'value',
 		'isFormula',
-		'isBold'
+		'isBold',
+		'foreground'
 	],
 	#category : #GToolkit4Excel
 }
@@ -19,6 +20,16 @@ GtExcelCell >> columnFor: anInteger [
 	^ anInteger >= 26
 		ifTrue: [ (self columnFor: anInteger // 26) , (self columnFor: anInteger \\ 26) ]
 		ifFalse: [ (anInteger + 10 printStringRadix: 36) last asString ]
+]
+
+{ #category : #accessing }
+GtExcelCell >> foreground [
+	^ foreground
+]
+
+{ #category : #accessing }
+GtExcelCell >> foreground: aColor [
+	foreground := aColor
 ]
 
 { #category : #accessing }
@@ -54,6 +65,12 @@ GtExcelCell >> saveAt: aPoint on: aStream [
 		ifTrue: [ GtExcelFile
 				outputCommand: 'Bold'
 				withArgs: {(self columnFor: aPoint x - 1) , aPoint y printString}
+				on: aStream ].
+	foreground
+		ifNotNil: [ GtExcelFile
+				outputCommand: 'ForegroundColor'
+				withArgs: {(self columnFor: aPoint x - 1) , aPoint y printString.
+						foreground asRGBInteger}
 				on: aStream ]
 ]
 

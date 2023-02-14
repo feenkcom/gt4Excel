@@ -29,6 +29,9 @@ namespace ExcelGenerator
                 case "Bold":
                     Worksheet.Cell(input.Arguments[0]).Style.Font.Bold = true;
                     break;
+                case "ForegroundColor":
+                    Worksheet.Cell(input.Arguments[0]).Style.Font.FontColor = XLColor.FromArgb(int.Parse(input.Arguments[1]));
+                    break;
                 case "AdjustWidthToContents":
                     if (input.Arguments.Length == 0)
                         Worksheet.Columns().AdjustToContents();
