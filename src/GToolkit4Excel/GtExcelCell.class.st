@@ -23,6 +23,13 @@ GtExcelCell >> columnFor: anInteger [
 ]
 
 { #category : #accessing }
+GtExcelCell >> exportValue [
+	^ (value isString and: [ value notEmpty and: [ value first = $' ] ])
+		ifTrue: [ '''' , value ]
+		ifFalse: [ value ]
+]
+
+{ #category : #accessing }
 GtExcelCell >> foreground [
 	^ foreground
 ]
@@ -59,7 +66,7 @@ GtExcelCell >> saveAt: aPoint on: aStream [
 	GtExcelFile
 		outputCommand: command
 		withArgs: {(self columnFor: aPoint x - 1) , aPoint y printString.
-				value}
+				self exportValue}
 		on: aStream.
 	isBold
 		ifTrue: [ GtExcelFile
