@@ -12,9 +12,40 @@ Class {
 }
 
 { #category : #accessing }
+GtExcelFile class >> buildProgram [
+	| process stdout stderr error |
+	process := (GtExternalProcessBuilder new: 'dotnet')
+			arg: 'build';
+			arg: '--configuration';
+			arg: 'Release';
+			arg: self generatorDirectory fileReference pathString;
+			pipeStdout;
+			pipeStderr;
+			spawn.
+	stdout := process asynchronousStdout.
+	stderr := process asynchronousStderr.
+	process wait isSuccess
+		ifFalse: [ error := stderr pollString.
+			error isEmpty ifTrue: [ error := stdout pollString ].
+			self error: error ].
+	^ stdout pollString
+]
+
+{ #category : #accessing }
+GtExcelFile class >> generatorDirectory [
+	^ GtResourceReference
+		path: Path * 'feenkcom' / 'gt4excel' / 'dotnet' / 'ExcelGenerator'
+]
+
+{ #category : #accessing }
 GtExcelFile class >> generatorProgram [
 	^ generatorProgram
-		ifNil: [ 'ExcelGenerator' ]
+		ifNil: [ self buildProgram.
+			(self generatorDirectory / 'bin' / 'Release') directories
+				do: [ :each | 
+					(each filesMatching: 'ExcelGenerator*')
+						do: [ :file | ^ generatorProgram := file withoutExtension pathString ] ].
+			'ExcelGenerator' ]
 ]
 
 { #category : #accessing }
@@ -63,11 +94,19 @@ GtExcelFile >> initialize [
 
 { #category : #accessing }
 GtExcelFile >> save [
-	| process |
+	| process stdout stderr error |
 	process := (GtExternalProcessBuilder new: self class generatorProgram)
 			pipeStdin;
+			pipeStdout;
+			pipeStderr;
 			spawn.
-	self saveOn: process stdin
+	stdout := process asynchronousStdout.
+	stderr := process asynchronousStderr.
+	self saveOn: process stdin.
+	process wait isSuccess
+		ifFalse: [ error := stderr pollString.
+			error isEmpty ifTrue: [ error := stdout pollString ].
+			self error: error ]
 ]
 
 { #category : #accessing }

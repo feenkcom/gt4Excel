@@ -14,9 +14,10 @@
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
-                    Console.Write("ERROR: ");
-                    Console.WriteLine(text);
+                    Console.Error.WriteLine(ex);
+                    Console.Error.Write("ERROR: ");
+                    Console.Error.WriteLine(text);
+                    Environment.Exit(-1);
                     break;
                 }
             }
