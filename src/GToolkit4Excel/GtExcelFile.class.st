@@ -83,7 +83,18 @@ GtExcelFile >> filename [
 
 { #category : #accessing }
 GtExcelFile >> filename: aString [
-	filename := aString
+	filename := aString asFileReference fullName
+]
+
+{ #category : #accessing }
+GtExcelFile >> gtActionSaveFor: anAction [
+	<gtAction>
+	^ anAction button
+		icon: BrGlamorousVectorIcons folder;
+		tooltip: 'Save';
+		action: [ :button | 
+			self save.
+			button phlow spawnObject: self filename asFileReference ]
 ]
 
 { #category : #views }
