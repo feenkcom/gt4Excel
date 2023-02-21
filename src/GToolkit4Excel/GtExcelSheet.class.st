@@ -35,6 +35,37 @@ GtExcelSheet >> cellAt: aPoint [
 ]
 
 { #category : #accessing }
+GtExcelSheet >> gtSheetFor: aView [
+	<gtView>
+	| view rowCount columnCount |
+	view := aView columnedList.
+	rowCount := (cells keys max: [ :each | each y ]) max: 1.
+	columnCount := (cells keys max: [ :each | each x ]) max: 1.
+	view
+		title: 'Sheet';
+		items: [ 1 to: rowCount ].
+	view
+		column: ''
+		text: [ :row | 
+			row printString asRopedText
+				foreground: BrGlamorousColors disabledHeaderTextColor ]
+		width: 25.
+	1
+		to: columnCount
+		do: [ :x | 
+			view
+				column: (GtExcelCell columnFor: x - 1)
+				text: [ :y | 
+					cells
+						at: x @ y
+						ifPresent: [ :cell | cell text ]
+						ifAbsent: [ '' asRopedText ] ] ].
+	view
+		transformation: [ :row | (1 to: columnCount) collect: [ :col | cells at: col @ row ifAbsent: [  ] ] ].
+	^ view
+]
+
+{ #category : #accessing }
 GtExcelSheet >> initialize [
 	super initialize.
 	cells := Dictionary new
@@ -48,6 +79,11 @@ GtExcelSheet >> name [
 { #category : #accessing }
 GtExcelSheet >> name: aString [
 	name := aString
+]
+
+{ #category : #printing }
+GtExcelSheet >> printOn: aStream [
+	aStream << name
 ]
 
 { #category : #accessing }

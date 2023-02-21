@@ -66,7 +66,7 @@ GtExcelFile class >> outputCommand: aString withArgs: anArray on: aStream [
 		nextPutAll: String crlf
 ]
 
-{ #category : #accessing }
+{ #category : #private }
 GtExcelFile class >> stringFor: each [
 	each isString
 		ifTrue: [ ^ '"'
@@ -86,13 +86,21 @@ GtExcelFile >> filename: aString [
 	filename := aString
 ]
 
+{ #category : #views }
+GtExcelFile >> gtSheetsFor: aView [
+	<gtView>
+	^ aView list
+		title: 'Sheets';
+		items: [ sheets ]
+]
+
 { #category : #accessing }
 GtExcelFile >> initialize [
 	super initialize.
 	sheets := OrderedCollection new
 ]
 
-{ #category : #accessing }
+{ #category : #saving }
 GtExcelFile >> save [
 	| process stdout stderr error |
 	process := (GtExternalProcessBuilder new: self class generatorProgram)
@@ -109,7 +117,7 @@ GtExcelFile >> save [
 			self error: error ]
 ]
 
-{ #category : #accessing }
+{ #category : #saving }
 GtExcelFile >> saveOn: aStream [
 	self class
 		outputCommand: 'CreateDocument'
