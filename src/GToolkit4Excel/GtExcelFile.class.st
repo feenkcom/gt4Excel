@@ -44,7 +44,12 @@ GtExcelFile class >> generatorProgram [
 			(self generatorDirectory / 'bin' / 'Release') directories
 				do: [ :each | 
 					(each filesMatching: 'ExcelGenerator*')
-						do: [ :file | ^ generatorProgram := file withoutExtension pathString ] ].
+						do: [ :file | 
+							| filename |
+							filename := file.
+							[ filename basename includes: $. ]
+								whileTrue: [ filename := filename withoutExtension ].
+							^ generatorProgram := filename pathString ] ].
 			'ExcelGenerator' ]
 ]
 
