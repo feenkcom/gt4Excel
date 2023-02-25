@@ -39,8 +39,11 @@ GtExcelSheet >> gtSheetFor: aView [
 	<gtView>
 	| view rowCount columnCount |
 	view := aView columnedList.
-	rowCount := (cells keys max: [ :each | each y ]) max: 1.
-	columnCount := (cells keys max: [ :each | each x ]) max: 1.
+	cells isEmpty
+		ifTrue: [ rowCount := 1.
+			columnCount := 1 ]
+		ifFalse: [ rowCount := (cells keys max: [ :each | each y ]) max: 1.
+			columnCount := (cells keys max: [ :each | each x ]) max: 1 ].
 	view
 		title: 'Sheet';
 		items: [ 1 to: rowCount ].

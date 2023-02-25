@@ -110,6 +110,11 @@ GtExcelFile >> gtSheetsFor: aView [
 		items: [ sheets ]
 ]
 
+{ #category : #testing }
+GtExcelFile >> hasSheetNamed: aString [
+	^ sheets anySatisfy: [ :each | each name = aString ]
+]
+
 { #category : #accessing }
 GtExcelFile >> initialize [
 	super initialize.
