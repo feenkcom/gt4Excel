@@ -75,6 +75,16 @@ GtExcelSheet >> initialize [
 ]
 
 { #category : #accessing }
+GtExcelSheet >> maxColumn [
+	^ cells keys inject: 0 into: [ :max :each | max max: each x ]
+]
+
+{ #category : #accessing }
+GtExcelSheet >> maxRow [
+	^ cells keys inject: 0 into: [ :max :each | max max: each y ]
+]
+
+{ #category : #accessing }
 GtExcelSheet >> name [
 	^ name
 ]
