@@ -121,6 +121,11 @@ GtExcelFile >> initialize [
 	sheets := OrderedCollection new
 ]
 
+{ #category : #accessing }
+GtExcelFile >> isEmpty [
+	^ sheets isEmpty
+]
+
 { #category : #saving }
 GtExcelFile >> save [
 	| process stdout stderr error |
