@@ -1,4 +1,6 @@
-﻿namespace ExcelGenerator
+﻿using System.Text;
+
+namespace ExcelGenerator
 {
     internal class FunctionCall
     {
@@ -65,7 +67,27 @@
             if (value.Length == 0)
                 return "";
             if (value[0] == '\"')
-                return value.Substring(1, value.Length - 2).Replace("\"\"", "\"").Replace("\\r", "\r").Replace("\\n", "\n");
+            {
+                var sb = new StringBuilder();
+                for (int i = 1; i < value.Length - 1; i++)
+                {
+                    var c = value[i];
+                    if (c == '\\')
+                    {
+                        c = value[++i];
+                        if (c == 'r')
+                            c = '\r';
+                        else if (c == 'n')
+                            c = '\n';
+                        else if (c != '\\')
+                            sb.Append('\\');
+                    }
+                    else if (c == '"')
+                        c = value[++i];
+                    sb.Append(c);
+                }
+                return sb.ToString();
+            }
             return value;
         }
 
